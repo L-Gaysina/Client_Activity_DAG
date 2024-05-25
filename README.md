@@ -36,7 +36,7 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis.git
+git clone https://github.com/L-Gaysina/Client_Activity_DAG.git
 cd DAG-for-Client-Transaction-Analysis
 ```
 или скопируйте все файлы в директорию dags вашего Airflow. Обычно это ~/airflow/dags/.
