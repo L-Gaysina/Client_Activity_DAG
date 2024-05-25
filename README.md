@@ -1,12 +1,36 @@
 # DAG-for-Client-Transaction-Analysis
 Этот проект предназначен для создания ориентированного ациклического графа (DAG) в Apache Airflow, который будет периодически рассчитывать витрину активности клиентов на основе суммы и количества их транзакций.
 
+## Описание задач DAG
+### DAG1
+Этот DAG состоит из следующих задач:
 
-Инструкции по настройке и запуску
-Требования
-Установленный и запущенный Apache Airflow.
-Убедитесь, что profit_table.csv находится в директории data для первого DAG и data_2 для второго DAG.
-Шаги для запуска DAG
+* `extract`: Задача скачивает данные по указанному URL и сохраняет их в формате CSV.
+* `transform`: Задача обрабатывает данные, применяя функцию transform, и собирает результаты по каждому продукту.
+* `load`: Задача сохраняет обработанные данные в отдельные CSV файлы для каждого продукта.
+
+### DAG2
+Этот DAG состоит из следующих задач:
+
+* `extract`: Задача скачивает данные по указанному URL и сохраняет их в формате CSV.
+* `transform_<product_code>`: 10 задач паралелльно обрабатывают данные для каждого продукта (например, transform_a, transform_b и т.д.) с использованием функции transform.
+* `load`: Задача сохраняет обработанные данные в отдельные CSV файлы для каждого продукта.
+
+## Обзор файлов
+* [DAG1_Liana_Gaisina.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/DAG1_Liana_Gaisina.py)
+Этот файл содержит определение первого DAG в Airflow, который организует процесс ETL.
+
+* [Скриншот успешного запуска](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/Graph%20DAG1.png)
+* [DAG2_Liana_Gaisina.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/DAG2_Liana_Gaisina.py)
+Этот файл содержит определение второго DAG в Airflow, который организует процесс ETL с распараллеливанием по продуктам.
+
+* [Скриншот успешного запуска](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/Graph%20DAG2.png)
+
+* [transform_script.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/transform_script.py)
+Содержит логику трансформации, необходимую для обработки входных данных и генерации флагов активности клиентов.
+
+# # Инструкции по настройке и запуску
+
 1. Клонирование репозитория
 
 ```bash
