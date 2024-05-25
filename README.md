@@ -74,7 +74,7 @@ airflow scheduler
 
 ### 4. Доступ к интерфейсу Airflow
 
-Откройте браузер и перейдите на http://localhost:8080. Вы должны увидеть DAG1_Liana_Gaisina и DAG12_Liana_Gaisina в списке.
+Откройте браузер и перейдите на http://localhost:8080. Вы должны увидеть DAG1_Liana_Gaisina и DAG2_Liana_Gaisina в списке.
 
 ### 5. Запуск DAG
 
