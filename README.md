@@ -31,17 +31,17 @@
 3. [transform_script.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/transform_script.py)
 Содержит логику трансформации, необходимую для обработки входных данных и генерации флагов активности клиентов.
 
-# # Инструкции по настройке и запуску
+## Инструкции по настройке и запуску
 
-1. Клонирование репозитория
+### 1. Клонирование репозитория
 
 ```bash
 git clone https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis.git
 cd DAG-for-Client-Transaction-Analysis
 ```
-или скопируйте все файлы в директорию dags вашего Airflow.Обычно это ~/airflow/dags/.
+или скопируйте все файлы в директорию dags вашего Airflow. Обычно это ~/airflow/dags/.
 
-2. Настроийка окружения
+### 2. Настроийка окружения
    
 Выполните следующие команды, чтобы установить Apache Airflow и другие необходимые библиотеки:   
 ```bash
@@ -57,7 +57,7 @@ pip install requests
 pip install pendulum
 ```
 
-3. Инициализация базы данных Airflow и запуск веб-сервера и планировщика.
+### 3. Инициализация базы данных Airflow и запуск веб-сервера и планировщика.
 
 Последовательно выполните следующие команды:
 
@@ -72,10 +72,10 @@ airflow webserver --port 8080
 airflow scheduler
 ```
 
-4. Доступ к интерфейсу Airflow
+### 4. Доступ к интерфейсу Airflow
 
 Откройте браузер и перейдите на http://localhost:8080. Вы должны увидеть DAG1_Liana_Gaisina и DAG12_Liana_Gaisina в списке.
 
-5. Запуск DAG
+### 5. Запуск DAG
 
 Вы можете вручную запустить DAG из интерфейса Airflow или дождаться его запуска по расписанию (5-го числа каждого месяца).
