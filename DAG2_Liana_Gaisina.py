@@ -29,9 +29,10 @@ os.makedirs(base_dir, exist_ok=True)
 DAG_ID = 'DAG2_Liana_Gaisina'
 default_args = {
     'owner': 'airflow',
-    'start_date': pendulum.datetime(2024, 4, 5, tz=pendulum.timezone("Europe/Moscow")),
-    'retries': 3,
-    'retry_delay': timedelta(seconds=60),
+    'start_date': pendulum.datetime(2024, 2, 5, tz=pendulum.timezone("Europe/Moscow")),
+    'schedule_interval': '0 0 5 * *',
+    'retries': 4,
+    "retry_delay": timedelta(seconds=60),
     'description': 'ETL DAG для ежемесячного расчета активности клиентов на основе транзакций.',
     'max_active_runs': 1,
     'catchup': False,
@@ -40,6 +41,15 @@ default_args = {
 def download_data(execution_date, **kwargs):
     """
     Скачивание данных по указанному URL и сохранение их в формате CSV. 
+    Args:
+        execution_date (str): Дата выполнения задачи, используется для именования файла данных.
+        kwargs (dict): Словарь с дополнительными параметрами (используется для взаимодействия с Airflow).
+    Основные шаги:
+        1. Формирование пути к файлу для сохранения данных.
+        2. Выполнение HTTP GET запроса к указанному URL.
+        3. Проверка успешности HTTP запроса.
+        4. Запись полученных данных в файл.
+        5. Логирование успешного завершения операции.
     """
     # Конфигурация URL и пути сохранения файла 
     data_url = (
@@ -47,7 +57,7 @@ def download_data(execution_date, **kwargs):
         'export=download&authuser=0&confirm=t&uuid=af8f933c-070d-4ea5-857b-2c31f2bad050&at='
         'APZUnTVuHs3BtcrjY_dbuHsDceYr:1716219233729'
     )
-    
+
     data_dir = base_dir
     os.makedirs(data_dir, exist_ok=True)
     output_file = os.path.join(data_dir, f'profit_table_{execution_date}.csv')
@@ -76,7 +86,7 @@ def process_single_product_data(product_code, execution_date, **kwargs):
     data_file = os.path.join(base_dir, f'profit_table_{execution_date}.csv')
     data_frame = pd.read_csv(data_file)
     transformed_data = transform(data_frame, execution_date, product_code)
-    
+
     # Сохраняем преобразованные данные в XCom для последующего использования
     task_instance = kwargs['ti']
     task_instance.xcom_push(key=f'processed_data_{product_code}', value=transformed_data.to_json())
@@ -88,7 +98,6 @@ def save_transformed_data(execution_date, **kwargs):
     Args:
         execution_date (str): Дата выполнения задачи, используется для именования и доступа к файлам данных.
         kwargs (dict): Словарь с дополнительными параметрами (используется для взаимодействия с Airflow).
-
     """
     # Преобразование данных 
     task_instance = kwargs['ti']
@@ -99,6 +108,7 @@ def save_transformed_data(execution_date, **kwargs):
             logger.error(f"No data received for product {product_code}.")
             continue
 
+
         data_frame = pd.read_json(data_json)
         output_file = os.path.join(base_dir, f'flags_activity_{product_code}_{execution_date}.csv')
 
@@ -107,16 +117,16 @@ def save_transformed_data(execution_date, **kwargs):
             existing_data_frame = pd.read_csv(output_file)
             updated_data_frame = pd.concat([existing_data_frame, data_frame], ignore_index=True)
             updated_data_frame.to_csv(output_file, index=False)
+
+        # Сохранение нового файла, если он не существовал 
         else:
             data_frame.to_csv(output_file, index=False)
 
 def create_dag():
     """
     Создание и конфигурация DAG (Directed Acyclic Graph) в Apache Airflow.
-
     Функция создаёт DAG с заданной конфигурацией параметров и определяет последовательность выполнения задач:
     извлечение данных (extract), трансформация данных (transform) и загрузка данных (load).
-
     Возвращает:
         dag (DAG): Объект DAG, сконфигурированный с заданными параметрами и задачами.
     """
@@ -130,7 +140,7 @@ def create_dag():
         catchup=default_args.get("catchup"),
         max_active_runs=default_args.get("max_active_runs")
     ) as dag:
-        
+
         # Задача для загрузки данных
         extract = PythonOperator(
             task_id='extract',
