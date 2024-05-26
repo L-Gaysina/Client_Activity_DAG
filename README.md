@@ -14,7 +14,7 @@
 
 * `extract`: Задача скачивает данные по указанному URL и сохраняет их в формате CSV.
 * `transform_<product_code>`: 10 задач паралелльно обрабатывают данные для каждого продукта (например, transform_a, transform_b и т.д.) с использованием функции transform.
-* `load`: Задача сохраняет обработанные данные в формате CSV файлы.
+* `load`: Задача сохраняет обработанные данные в формате CSV.
 
 ## Обзор файлов
 1. [DAG1_Liana_Gaisina.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/DAG1_Liana_Gaisina.py)
