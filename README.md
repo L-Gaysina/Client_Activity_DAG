@@ -20,12 +20,12 @@
 1. [DAG1_Liana_Gaisina.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/DAG1_Liana_Gaisina.py)
 Этот файл содержит определение первого DAG в Airflow, который организует процесс ETL.
 
-* [Скриншот успешного запуска](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/Graph%20DAG1.png)
+* [Скриншот успешного запуска](https://github.com/L-Gaysina/Client_Activity_DAG/blob/main/Graph%20DAG1.png)
 
 2. [DAG2_Liana_Gaisina.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/DAG2_Liana_Gaisina.py)
 Этот файл содержит определение второго DAG в Airflow, который организует процесс ETL с распараллеливанием по продуктам.
 
-* [Скриншот успешного запуска](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/Graph%20DAG2.png)
+* [Скриншот успешного запуска](https://github.com/L-Gaysina/Client_Activity_DAG/blob/main/Graph%20DAG2.png)
 
 
 3. [transform_script.py](https://github.com/L-Gaysina/DAG-for-Client-Transaction-Analysis/blob/main/transform_script.py)
