@@ -20,17 +20,18 @@ logger.addHandler(handler)
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from transform_script import transform  # импортируем функцию transform из скрипта
 
-# Основная директория для хранения данных
-base_dir = '/tmp/airflow/data_2/'
+# Получаем текущую директорию скрипта
+script_directory = os.path.abspath(os.path.dirname(__file__))
+base_dir = os.path.join(script_directory, 'data_2')
+os.makedirs(base_dir, exist_ok=True)
 
 # Настройки по умолчанию для DAG
 DAG_ID = 'DAG2_Liana_Gaisina'
 default_args = {
     'owner': 'airflow',
     'start_date': pendulum.datetime(2024, 4, 5, tz=pendulum.timezone("Europe/Moscow")),
-    'schedule_interval': '0 0 5 * *',
     'retries': 3,
-    "retry_delay": timedelta(seconds=60),
+    'retry_delay': timedelta(seconds=60),
     'description': 'ETL DAG для ежемесячного расчета активности клиентов на основе транзакций.',
     'max_active_runs': 1,
     'catchup': False,
@@ -39,17 +40,6 @@ default_args = {
 def download_data(execution_date, **kwargs):
     """
     Скачивание данных по указанному URL и сохранение их в формате CSV. 
-
-    Args:
-        execution_date (str): Дата выполнения задачи, используется для именования файла данных.
-        kwargs (dict): Словарь с дополнительными параметрами (используется для взаимодействия с Airflow).
-
-    Основные шаги:
-        1. Формирование пути к файлу для сохранения данных.
-        2. Выполнение HTTP GET запроса к указанному URL.
-        3. Проверка успешности HTTP запроса.
-        4. Запись полученных данных в файл.
-        5. Логирование успешного завершения операции.
     """
     # Конфигурация URL и пути сохранения файла 
     data_url = (
@@ -83,7 +73,7 @@ def process_single_product_data(product_code, execution_date, **kwargs):
         execution_date (str): Дата выполнения задачи, используется для именования и доступа к файлам данных.
         kwargs (dict): Словарь с дополнительными параметрами (используется для взаимодействия с Airflow).
     """
-    data_file = f'{base_dir}profit_table_{execution_date}.csv'
+    data_file = os.path.join(base_dir, f'profit_table_{execution_date}.csv')
     data_frame = pd.read_csv(data_file)
     transformed_data = transform(data_frame, execution_date, product_code)
     
@@ -109,7 +99,6 @@ def save_transformed_data(execution_date, **kwargs):
             logger.error(f"No data received for product {product_code}.")
             continue
 
-       
         data_frame = pd.read_json(data_json)
         output_file = os.path.join(base_dir, f'flags_activity_{product_code}_{execution_date}.csv')
 
@@ -118,8 +107,6 @@ def save_transformed_data(execution_date, **kwargs):
             existing_data_frame = pd.read_csv(output_file)
             updated_data_frame = pd.concat([existing_data_frame, data_frame], ignore_index=True)
             updated_data_frame.to_csv(output_file, index=False)
-
-        # Сохранение нового файла, если он не существовал 
         else:
             data_frame.to_csv(output_file, index=False)
 
